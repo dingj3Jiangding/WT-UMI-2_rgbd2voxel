@@ -1,0 +1,15 @@
+# Nine-case single-seed pilot. Add seeds (e.g. [7, 19, 31]) for replication.
+schema_version: 1
+base_config: ../scenes/static_door.yaml
+resolutions: [80, 160, 240]
+seeds: [7]
+profiles:
+  - name: clean
+    depth_noise_std_m: 0.0
+    dropout_probability: 0.0
+  - name: noise_5mm
+    depth_noise_std_m: 0.005
+    dropout_probability: 0.0
+  - name: noise_5mm_dropout10
+    depth_noise_std_m: 0.005
+    dropout_probability: 0.10

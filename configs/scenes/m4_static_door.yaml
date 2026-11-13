@@ -1,0 +1,147 @@
+schema_version: 2
+scene:
+  name: static_door
+  objects:
+  - type: box
+    size_m:
+    - 0.9
+    - 1.9
+    - 0.07
+    translation_m:
+    - 0.7
+    - 0.4
+    - 1.6
+    color_rgb:
+    - 155
+    - 95
+    - 50
+  - type: box
+    size_m:
+    - 0.12
+    - 2.05
+    - 0.15
+    translation_m:
+    - 0.55
+    - 0.25
+    - 1.57
+    color_rgb:
+    - 210
+    - 215
+    - 225
+  - type: box
+    size_m:
+    - 0.12
+    - 2.05
+    - 0.15
+    translation_m:
+    - 1.63
+    - 0.25
+    - 1.57
+    color_rgb:
+    - 210
+    - 215
+    - 225
+  - type: box
+    size_m:
+    - 1.2
+    - 0.12
+    - 0.15
+    translation_m:
+    - 0.55
+    - 0.25
+    - 1.57
+    color_rgb:
+    - 210
+    - 215
+    - 225
+  - type: box
+    size_m:
+    - 0.22
+    - 0.055
+    - 0.1
+    translation_m:
+    - 1.28
+    - 1.27
+    - 1.5
+    color_rgb:
+    - 45
+    - 75
+    - 205
+  - type: box
+    size_m:
+    - 2.2
+    - 0.08
+    - 1.2
+    translation_m:
+    - 0.05
+    - 2.3
+    - 1.0
+    color_rgb:
+    - 75
+    - 115
+    - 90
+camera:
+  width: 240
+  height: 240
+  fx: 205.0
+  fy: 205.0
+  cx: 119.5
+  cy: 119.5
+  depth_trunc_m: 5.0
+  convention: opencv
+reconstruction:
+  backend: uniform
+  volume_length_m: 2.5
+  resolution: 160
+  origin_m:
+  - 0.0
+  - 0.0
+  - 0.0
+  sdf_trunc_m: 0.06
+views:
+- id: front
+  split: integration
+  eye:
+  - 1.15
+  - 1.3
+  - -0.8
+  target:
+  - 1.15
+  - 1.3
+  - 1.6
+- id: left
+  split: integration
+  eye:
+  - -0.1
+  - 1.3
+  - -0.5
+  target:
+  - 1.15
+  - 1.3
+  - 1.6
+- id: right
+  split: integration
+  eye:
+  - 2.4
+  - 1.3
+  - -0.5
+  target:
+  - 1.15
+  - 1.3
+  - 1.6
+- id: novel_front_right
+  split: held_out
+  eye:
+  - 1.75
+  - 1.05
+  - -0.65
+  target:
+  - 1.15
+  - 1.3
+  - 1.6
+evaluation:
+  depth_tolerance_m: 0.02
+occupancy:
+  enabled: true
+  resolution: 80
+  pixel_stride: 1

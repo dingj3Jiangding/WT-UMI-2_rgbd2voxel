@@ -1,0 +1,14 @@
+# Capture once, reconstruct the same RGB-D frames at three voxel sizes.
+schema_version: 1
+capture_config: ../capture/mujoco_room.yaml
+reconstruction:
+  backend: uniform
+  volume_length_m: 3.5
+  origin_m: [-0.25, -0.25, -0.25]
+  resolution: 160
+  sdf_trunc_m: 0.08
+evaluation:
+  depth_tolerance_m: 0.02
+resolutions: [112, 160, 224]
+occupancy:
+  enabled: false

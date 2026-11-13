@@ -1,0 +1,41 @@
+# Static room; the same camera visits four fusion poses and one held-out pose.
+# This is capture-tool motion, not a robot-mounted sensor or locomotion rollout.
+schema_version: 1
+scene_name: mujoco_static_room
+mjcf: ../../assets/simulators/mujoco/room.xml
+camera:
+  name: capture_camera
+  width: 240
+  height: 180
+  depth_trunc_m: 5.0
+views:
+  - id: front
+    split: integration
+    timestamp_s: 0.0
+    eye: [1.5, 0.35, 1.5]
+    target: [1.5, 2.0, 0.85]
+    up: [0, 0, 1]
+  - id: left
+    split: integration
+    timestamp_s: 1.0
+    eye: [0.55, 0.5, 1.6]
+    target: [1.4, 2.0, 0.8]
+    up: [0, 0, 1]
+  - id: right
+    split: integration
+    timestamp_s: 2.0
+    eye: [2.5, 0.5, 1.6]
+    target: [1.4, 2.0, 0.8]
+    up: [0, 0, 1]
+  - id: high
+    split: integration
+    timestamp_s: 3.0
+    eye: [1.5, 0.8, 2.15]
+    target: [1.5, 1.9, 0.75]
+    up: [0, 0, 1]
+  - id: novel_front_right
+    split: held_out
+    timestamp_s: 4.0
+    eye: [2.2, 0.8, 1.8]
+    target: [1.4, 1.9, 0.9]
+    up: [0, 0, 1]

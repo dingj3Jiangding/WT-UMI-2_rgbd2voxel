@@ -1,0 +1,20 @@
+scene:
+  name: synthetic_cube
+  root: ../../data/scenes/synthetic_cube
+
+camera:
+  depth_scale: 1.0
+  depth_trunc_m: 3.0
+  convention: opencv
+
+reconstruction:
+  method: uniform_tsdf
+  backend: uniform
+  voxel_size_m: 0.01
+  sdf_trunc_m: 0.04
+  volume_length_m: 3.0
+  resolution: 128
+
+evaluation:
+  render_same_view: true
+  render_novel_view: true
