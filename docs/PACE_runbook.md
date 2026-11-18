@@ -1,6 +1,6 @@
 # Develop on Mac, validate on PACE
 
-The project provides portable check scripts and a Slurm submission template. PACE has not been connected or tested; the account, partition, scheduler, software modules, GPU, and driver setup have not been confirmed. Actual logs from the target system determine whether a run succeeds.
+The M5 room capture/reconstruction demo has completed on a PACE Linux compute node using Python 3.12.5, MuJoCo 3.17.0, Open3D 0.19.0 and EGL. The project provides portable check scripts and a Slurm submission template. Account, partition and QoS selections remain account-specific; actual logs from the target system determine whether a new run succeeds.
 
 ## 1. Transfer source and data, then create a Linux environment
 
@@ -41,18 +41,80 @@ The Linux environment is created once. With the editable install below, ordinary
 
 ### Create the Linux environment
 
-Prepare Python 3.12 using your team's PACE setup, then run:
+The confirmed Python module is `python/3.12.5`. From the project directory, load it and verify the interpreter before creating a new Linux environment:
 
 ```bash
 cd "/your/remote/project"
-python3.12 -m venv .venv
-./.venv/bin/python -m pip install -e '.[test,sim]'
-./.venv/bin/python -m pip check
+module load python/3.12.5
+python3 --version
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[test,sim]'
+python -m pip check
 ```
 
-`pyproject.toml` declares cross-platform dependency ranges. The Mac `requirements.txt` records local versions and does not establish that every version has been validated on Linux. MuJoCo is installed through the `sim` extra. The first example has been validated on Mac; the Linux graphics backend, GPU drivers, and cluster environment still need testing. Run the core pipeline before enabling actual simulator capture.
+`python3 --version` should show 3.12.5 before creating the environment. Loading a module does not upgrade an existing Python 3.9 virtual environment: deactivate and back up an old environment before recreating it. On later logins, load the same module and activate `.venv` without recreating it.
+
+`pyproject.toml` declares cross-platform dependency ranges. The Mac `requirements.txt` records local versions and does not establish that every version has been validated on Linux. MuJoCo is installed through the `sim` extra. The M5 baseline has run on PACE, but the graphics backend and allocation still need checking in each new compute environment.
 
 ## 2. Run checks on an allocated compute node
+
+### Request an interactive shell
+
+After syncing from Mac, run this on a PACE login node from the project root:
+
+```bash
+bash scripts/pace/request_node.sh
+```
+
+The helper requests one node, one task, four CPU cores, 8G of total memory, and 30 minutes. These are starter settings for the small baseline, not measured minimum requirements. It uses `srun --pty` to start the shell on allocated compute resources. Requests may wait in the scheduler queue.
+
+The shell prints its hostname and Slurm job ID, enters the project, and activates the project's `.venv` if present. It reads your `.bashrc` before activating the project environment and sets `OMP_NUM_THREADS` to the allocated CPU count. Load any required PACE software modules before requesting the shell. If `.venv` is absent, the shell still opens and prints setup guidance.
+
+Within that shell, you can run:
+
+```bash
+python --version
+bash scripts/pace/run_checks.sh
+```
+
+Use `exit` to end the interactive shell and release the allocation. `squeue -u "$USER"` lists your jobs. This helper refuses a new request when `SLURM_JOB_ID` is already set; use the current allocation or exit it first.
+
+For fresh MuJoCo capture, request one GPU on a suitable partition:
+
+```bash
+bash scripts/pace/request_node.sh --gpu
+```
+
+This adds `--gres=gpu:1`; it does not select a GPU model or validate EGL. Once the allocated node's EGL support is confirmed, use the rendering commands below. Saved RGB-D replay and the default CPU tests do not require a GPU.
+
+Resource and scheduler overrides:
+
+```bash
+bash scripts/pace/request_node.sh --cpus 8 --mem 16G --time 01:00:00
+bash scripts/pace/request_node.sh \
+  --account your_account --partition your_partition --qos your_qos
+```
+
+The second command contains placeholders: use only values authorized for your account. When omitted, Slurm's configured defaults apply. You may set `WTUMI_PACE_ACCOUNT`, `WTUMI_PACE_PARTITION`, and `WTUMI_PACE_QOS` in your PACE shell configuration instead of repeating these options. The helper does not guess cluster-specific values.
+
+If Slurm reports an account, partition or QoS error, inspect your available configuration:
+
+```bash
+sinfo -o "%P %a %l %G"
+sacctmgr show assoc where user="$USER" format=Account,Partition,QOS,DefaultQOS
+```
+
+A local preview works without Slurm and requests no resources:
+
+```bash
+bash scripts/pace/request_node.sh --dry-run
+bash scripts/pace/request_node.sh --help
+```
+
+The preview uses the current machine's project path; the path is resolved again when the script runs on PACE. Argument handling and shell initialization were verified locally with a simulated `srun`. MuJoCo checks and the M5 demo have also run on an actual PACE compute node.
+
+### Run the checks
 
 The following works locally or on a compute node with allocated resources:
 
@@ -89,7 +151,31 @@ export WTUMI_DEMO_CONFIG=configs/demos/mujoco_room.yaml
 bash scripts/pace/run_checks.sh
 ```
 
-`WTUMI_TEST_MUJOCO_RENDER=1` enables actual rendering tests for Z-depth, pixel centers, and camera coordinates. These tests are explicitly skipped when the variable is not set. EGL availability depends on node drivers and resource allocation; it has not been validated on PACE for this project. CPU-only/headless nodes may require a separate OSMesa setup. Mac uses the default CGL backend; do not set the Linux EGL environment variable there.
+`WTUMI_TEST_MUJOCO_RENDER=1` enables actual rendering tests for Z-depth, pixel centers, and camera coordinates. These tests are explicitly skipped when the variable is not set. EGL worked for the recorded PACE room demo, but availability still depends on node drivers and resource allocation. CPU-only/headless nodes may require a separate OSMesa setup. Mac uses the default CGL backend; do not set the Linux EGL environment variable there.
+
+The analytic tilted-plane test disables multisampling to match production capture. Older source copies left the test at MuJoCo's default four samples and could report a millimetre-scale depth bias on EGL. Sync the corrected source rather than relaxing the geometric tolerance.
+
+### Run the new staircase occlusion benchmark
+
+After synchronizing source from Mac, request a GPU compute shell, load Python and activate the project environment. No additional dependencies beyond `.[test,sim]` are required. Check the new attached-camera renderer, then run the benchmark:
+
+```bash
+MUJOCO_GL=egl WTUMI_TEST_MUJOCO_RENDER=1 python -m pytest -q -rs tests/test_rig_capture.py
+MUJOCO_GL=egl MPLBACKEND=Agg python scripts/run_occlusion_demo.py
+```
+
+Require the rendering tests to pass, not skip. The M6 staircase/box scene completed separately on PACE on 2026-11-16; the recorded directory is `outputs/occlusion_demo_20261116_184221_889717/`. Each new scene or graphics environment still needs its own checks. The output directory contains a README, three-condition comparisons, raw/masked capture playback, occupancy progression and an offline viewer. See [M6](m6_stairs_occlusion.md) for definitions and replay. Use `exit` after the run to release an interactive allocation.
+
+### Run observation-memory playback (M7)
+
+After source synchronization, an allocated compute node can reuse the saved paired M6 capture without invoking the simulator:
+
+```bash
+MPLBACKEND=Agg python scripts/run_memory_demo.py \
+  --capture outputs/occlusion_demo_20261116_184221_889717/capture
+```
+
+For fresh capture, omit `--capture` and add `MUJOCO_GL=egl` on a GPU node. M7 has its own validation scope; successful M6 execution does not validate M7. Download the entire output directory and open `index.html` for both final viewers, the temporal 3D viewer and all animations. See [M7](m7_visual_memory.md).
 
 You can also run the complete demo on its own:
 

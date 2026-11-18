@@ -35,8 +35,38 @@ def main():
     demo = sub.add_parser("demo", help="Capture once, reconstruct at several voxel sizes, export comparisons")
     demo.add_argument("--config", type=Path, required=True)
     demo.add_argument("--output", type=Path, help="New/empty demo output directory")
+    occlusion = sub.add_parser("occlusion-demo", help="Compare staircase mapping with head-camera payload occlusion")
+    occlusion.add_argument("--config", type=Path, required=True)
+    occlusion.add_argument("--output", type=Path, help="New/empty benchmark output directory")
+    memory = sub.add_parser("memory-demo", help="Compare visual history before and after carried-box occlusion")
+    memory.add_argument("--config", type=Path, required=True)
+    memory.add_argument("--output", type=Path, help="New/empty benchmark output directory")
+    memory.add_argument("--capture", type=Path, help="Saved paired M6 capture; omit for fresh MuJoCo capture")
+    views = sub.add_parser("view-demo", help="Compare fixed and independently scanning head cameras")
+    views.add_argument("--config", type=Path, required=True)
+    views.add_argument("--output", type=Path, help="New/empty benchmark output directory")
     args = parser.parse_args()
     try:
+        if args.command == "view-demo":
+            from .view_demo import run_view_demo
+            out = args.output or Path("outputs") / f"view_demo_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+            report = run_view_demo(args.config,out,progress=lambda message:print(message,flush=True))
+            print(json.dumps({"output":str(out.resolve()),"paths":report["paths"],"verification":report["verification"]},indent=2))
+            return
+        if args.command == "memory-demo":
+            from .memory_demo import run_memory_demo
+            out = args.output or Path("outputs") / f"memory_demo_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+            report = run_memory_demo(args.config,out,capture_dir=args.capture,progress=lambda message:print(message,flush=True))
+            print(json.dumps({"output":str(out.resolve()),"paths":report["paths"],
+                              "paired_inputs_verified":report["paired_inputs_verified"]},indent=2))
+            return
+        if args.command == "occlusion-demo":
+            from .occlusion_demo import run_occlusion_demo
+            out = args.output or Path("outputs") / f"occlusion_demo_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+            report = run_occlusion_demo(args.config, out, progress=lambda message: print(message, flush=True))
+            print(json.dumps({"output": str(out.resolve()), "paths": report["paths"],
+                              "paired_inputs_verified": report["paired_inputs_verified"]}, indent=2))
+            return
         if args.command == "capture":
             from .mujoco_capture import capture_mujoco
             manifest = capture_mujoco(args.config, args.output)

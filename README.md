@@ -5,6 +5,88 @@ RGB is interpolated from the fused vertex colors of the reconstructed mesh. The 
 
 Use English for all project-authored interface text, documentation, code comments, docstrings and generated reports.
 
+## Unitree G1 scene
+
+```bash
+source .venv/bin/activate
+python scripts/scene.py view --scene g1_stairs
+python scripts/scene.py run --scene g1_stairs --output outputs/my_g1_run
+python scripts/scene.py view --result outputs/my_g1_run
+```
+
+This example uses the Unitree G1 29-joint model from MuJoCo Menagerie, with its actual link meshes replacing the torso proxy. The head camera has a provisional mounting position, the arms use an authored carry pose, and all robot/payload pixels are excluded from mapping. The scene replays a fixed body pose along the camera trajectory; it does not implement walking or grasp control. The original articulated model and its BSD-3-Clause license are retained in `assets/robots/unitree_g1/`. See [the G1 guide](docs/unitree_g1.md).
+
+## Quick scene changes and native MuJoCo viewing
+
+```bash
+source .venv/bin/activate
+python scripts/scene.py view --scene stairs
+python scripts/scene.py run --scene stairs --output outputs/my_stairs_run
+python scripts/scene.py view --result outputs/my_stairs_run
+```
+
+Choose `room`, `stairs`, `doorway`, or `g1_stairs`, or create an editable bundle with `python scripts/scene.py create --template stairs --output scenes/my_stairs`. One `scene.yaml` controls geometry, the camera, its trajectory and map settings. The native viewer can show the original scene, cumulative reconstructed meshes, observed TSDF surface voxels, and an overlay. These are saved reconstruction steps, with each observation fused once. See [the quick-scene guide](docs/quick_scenes.md) for controls, custom assets and PACE commands.
+
+The `room` template is an enclosed 6.4 x 10.0 m rectangular room with a centered 5.0 m longitudinal wall. The `doorway` template uses the same outer room with a transverse center partition and an articulated door. Both room templates use the original-scale Unitree G1 in a fixed carry pose with a carried box and a provisional head-mounted camera. The box moves with the robot and blocks part of the camera image; robot and box pixels are excluded from the static environment map. In the source viewer, `O` opens the selected door by 10 degrees, `L` closes it by 10 degrees, and `N` selects the next door. Preview changes are temporary; set `environment.doors[].angle_degrees` in a copied scene configuration for a reconstruction run. Each run holds that angle fixed, and saved-result playback keeps the captured state. These controls do not implement robot manipulation or door contact dynamics.
+
+## Three-scene G1 vision-to-voxel experiment
+
+```bash
+python scripts/run_scene_suite.py --output outputs/my_g1_vision_suite
+```
+
+For fresh 640 x 480 capture and 30 fps videos on PACE, add `--preset pace30`. This produces 121 actual observations per scene over the same four-second path. See [the 30 fps PACE guide](docs/g1_suite_30fps_pace.md) for syncing, allocation, running and downloading. `python scripts/run_scene_suite.py --preset pace30 --dry-run` previews the plan without creating outputs.
+
+To regenerate only room and doorway in an existing suite on PACE, use `bash scripts/pace/run_scene_suite.sh --output outputs/g1_vision_30fps_pace --replace-scenes room doorway`. This recaptures RGB-D and rebuilds both maps with the current box-enabled templates, retaining the stairs result. Existing results remain protected unless replacement is explicitly requested; see the guide for details.
+
+This runs `room`, `doorway` and `g1_stairs` and creates one portable `index.html` with all three experiments. Each scene includes a `camera_voxel.mp4` when the optional video extra is installed, a GIF fallback, a preview PNG and a JSON frame record. The left panel is recorded head-camera RGB; the right is the matching cumulative voxel map rendered in MuJoCo from an overview. The viewpoints differ. Display sampling and camera markers are labeled, and no original environment surfaces are included on the right. The saved maps retain all observations. Held-out RGB-D comparisons and native reconstruction playback remain available in each scene directory.
+
+A completed local example is in `outputs/g1_vision_suite`. Open its `index.html`, or inspect a native result:
+
+```bash
+python scripts/scene.py view --result outputs/g1_vision_suite/room
+python scripts/scene.py view --result outputs/g1_vision_suite/doorway
+python scripts/scene.py view --result outputs/g1_vision_suite/g1_stairs
+```
+
+On an allocated PACE GPU node, use `MUJOCO_GL=egl MPLBACKEND=Agg` before the suite command. Sync source, scene configurations and robot assets first. Copy the complete suite directory back to the Mac for interactive viewing. Install `.[video]` to enable MP4 output.
+
+## Independent head orientation while carrying a box (M8)
+
+```bash
+python scripts/run_view_demo.py
+```
+
+M8 compares a fixed head orientation with a prescribed head scan on the same body/payload path. Both conditions continuously carry the box and use equal frame budgets. It exports actual camera-direction playback and tracks observed versus never-observed stair surface samples. See [the M8 guide](docs/m8_head_scan.md) for the local result and the 61-frame high-quality PACE configuration. Rotation changes field-of-view coverage; it cannot unblock a ray physically occluded by the box at a fixed camera center.
+
+## Visual memory before box occlusion (M7)
+
+The 61-frame EGL experiment has completed on PACE; see [measured M7 results](docs/m7_pace_results.md).
+
+For higher-resolution capture and smoother videos, use the [61-frame, 640 x 480 PACE workflow](docs/m7_high_quality.md). It exports MP4 at 15 frames per second and incrementally builds each cumulative map.
+
+```bash
+python scripts/run_memory_demo.py
+```
+
+The default M7 histories share the same five camera poses: box occlusion throughout, or two no-box observations followed by three box observations. M7 exports cumulative 3D playback with Play/Pause and a frame slider, raw/masked input and occupancy animations, per-frame metrics, and a final viewer for each condition. Open the result's `index.html` in a browser.
+
+Reuse a saved M6 capture without launching the simulator by adding `--capture outputs/occlusion_demo_20261116_184221_889717/capture`. The source remains unchanged; relative replay configs and copied observations travel with the new result. See [the M7 guide](docs/m7_visual_memory.md) for run commands, metric definitions and limitations. This is scheduled observation replay with a static environment, not physical pickup or walking control.
+
+Generated M1-M3 output directories were removed on 2026-11-17 at the user's request. Their configurations and tests remain available; regenerate those outputs before following historical viewing commands below.
+
+## Head-camera staircase occlusion benchmark (M6)
+
+```bash
+python scripts/run_occlusion_demo.py
+```
+
+The camera is attached to a kinematic rig carrying a box. Five configured poses capture paired observations with and without the box; two separate cameras evaluate the recovered staircase. Three conditions compare no-box multi-frame mapping, the first masked box frame, and all masked box frames. Robot and payload pixels are excluded before both TSDF and occupancy fusion, while raw images, masks and payload poses are retained.
+
+The run exports stair-only depth metrics, exposed-surface completeness, fixed-region unknown/free/occupied states, capture/occupancy animations, and an offline viewer. Open its `README.md` for links. The demo uses simulator poses and masks; it does not implement walking control, localization, tactile fusion or dynamic clearing.
+
+Adjust mounting, box/stair dimensions and waypoints in `configs/capture/stairs_rig.yaml`; adjust voxel resolution and metric thresholds in `configs/demos/stairs_occlusion.yaml`. See [the M6 guide](docs/m6_stairs_occlusion.md) for experiment semantics, replay and PACE commands. On an allocated Linux GPU node, prefix the run with `MUJOCO_GL=egl MPLBACKEND=Agg`.
+
 ## Start with the MuJoCo room (M5)
 
 MuJoCo is installed and verified in the local Mac environment. From the project root, run:
@@ -31,7 +113,7 @@ open outputs/m5_mujoco_demo/experiment/runs/clean_n160_s7/viewer.html
 ```
 
 The viewer's Mesh, Voxel and Point cloud modes display the reconstructed surface, near-surface voxels and surface points, respectively. Camera markers distinguish fusion viewpoints from evaluation-only viewpoints.
-See [M5 measured results](docs/m5_results.md) for the results, error interpretation and validation scope. See the [PACE runbook](docs/PACE_runbook.md) for Linux/PACE setup and execution. PACE has not been tested yet.
+See [M5 measured results](docs/m5_results.md) for the results, error interpretation and validation scope. The M5 room baseline has completed on Mac and PACE using EGL; this does not validate every new scene or graphics configuration. See the [PACE runbook](docs/PACE_runbook.md) for Linux/PACE setup and execution.
 
 ### Sync Mac changes to PACE
 
@@ -43,6 +125,28 @@ bash scripts/pace/sync_to_pace.sh --with-replay
 ```
 
 For later source updates, run `bash scripts/pace/sync_to_pace.sh`. The default destination is `login-ice.pace.gatech.edu:projects/WT-UMI-2_rgbd2voxel`, using your SSH account configuration. The script transfers changed source files and excludes environments and general output directories. It does not delete remote-only files; remove obsolete source files separately after local deletions or renames. See the [PACE runbook](docs/PACE_runbook.md) for authentication, destination overrides and Linux setup.
+
+### Download PACE results to the Mac
+
+Run this from the Mac project directory, using the exact output folder name from PACE:
+
+```bash
+bash scripts/pace/download_from_pace.sh g1_vision_30fps_pace
+```
+
+This downloads the complete result into local `outputs/g1_vision_30fps_pace/`, creating the directory automatically. Repeat the command to update changed files; local-only files are preserved. No Python environment is needed. Use `--list` instead of a run name to inspect remote outputs, or add `--dry-run` to preview without connecting. See `--help` for account, remote project and local destination overrides.
+
+A terminal shows a progress bar automatically: `Overall` with newer rsync, or `Current file` with older Mac versions. A current-file bar reaching 100% does not mean the whole download is complete; wait for `Download completed`. Add `--no-progress` to disable progress output.
+
+### Request a PACE compute session
+
+After syncing the project, run this from its directory on a PACE login node:
+
+```bash
+bash scripts/pace/request_node.sh
+```
+
+It requests 4 CPU cores, 8G memory and 30 minutes on one node, then opens an interactive compute-node shell in the project. The shell activates the project's `.venv` if available. Run `bash scripts/pace/run_checks.sh` there, then `exit` to release the allocation. Add `--gpu` for one GPU, or use `--account`, `--partition` and `--qos` with your authorized values when site defaults are insufficient. `--dry-run` prints the request without submitting it. See the [PACE runbook](docs/PACE_runbook.md) for details; authorized scheduler values depend on the account.
 
 ### Change the simulated scene
 

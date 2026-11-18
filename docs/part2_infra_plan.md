@@ -76,7 +76,7 @@ Save full states/counts, statistics and configured world-point probes. Inspect t
 
 Temporal clearing, probabilistic sensor fusion, object-interior inference and tactile updates remain future work. This evidence representation provides a starting point for later tactile probing experiments.
 
-### M5: simulator adapter and portable RGB-D sequences — implemented on Mac
+### M5: simulator adapter and portable RGB-D sequences — implemented on Mac and PACE
 
 Use MuJoCo as the team's first, replaceable simulator example. Capture a static room from four camera poses and reserve a fifth pose for evaluation. MuJoCo camera axes are converted to the OpenCV convention; the actual simulator calibration and camera pose are exported. The world is Z-up, carried through metadata to the result viewer.
 
@@ -86,16 +86,32 @@ The `demo` command and `scripts/run_sim_demo.py` capture once, reuse identical i
 
 This is a static capture at camera waypoints, not a continuous simulated trajectory. The first example contains no robot, door motion or tactile input. RGB reconstruction uses fused vertex colours and does not reproduce the simulator's full material or lighting model.
 
-Mac verification: 139 tests passed with actual MuJoCo rendering enabled; the full room demo completed. See [M5 results](m5_results.md). A local check script and generic Slurm template are ready; PACE has not been tested.
+Original M5 Mac verification: 139 tests passed with actual MuJoCo rendering enabled; the full room demo completed. A later PACE EGL room run also completed; the downloaded measurement record is `outputs/pace_meeting_results/`. See [M5 results](m5_results.md) for the historical Mac milestone and [PACE runbook](PACE_runbook.md) for current instructions.
 
-### Next: PACE validation and scene coverage
+### M6: head-camera staircase occlusion — implemented on Mac and PACE
 
-1. Prepare the Linux environment on the team's PACE system and run the same checks on allocated compute resources. Confirm the rendering backend and record versions; see [PACE runbook](PACE_runbook.md).
-2. Replay the saved Mac sequence separately from fresh simulator capture, so reconstruction portability and simulator setup can be assessed independently.
-3. Add a static doorway and other contact-relevant geometry through assets/configuration. Evaluate multiple held-out views and local errors near edges, gaps and handles before drawing conclusions about planning suitability.
-4. Compare camera coverage and noise conditions using the existing experiment interface. More views can reveal surfaces, but cannot reconstruct persistently occluded regions without additional assumptions.
+A kinematic rig moves a head-height camera, torso proxy and carried box together near a four-step staircase. Three conditions compare five no-box frames, the first box frame and all five box frames. Box/self pixels are excluded before both map updates. Two shared evaluation cameras and analytic stair samples quantify missing geometry. M6 ran separately on Mac and PACE; see [M6](m6_stairs_occlusion.md).
 
-Future decisions remain separate: whether RGB-D maps are initial priors or privileged training/evaluation data, how tactile observations update maps, and how dynamic objects clear old evidence. These decisions are not prerequisites for the current acquisition/reconstruction/evaluation infrastructure.
+### M7: visual history before later occlusion — implemented on Mac and PACE
+
+Two histories use identical poses and frame budgets: always carrying a box, or first observing without it and then using box observations. Actual paired simulator frames are scheduled into portable datasets; no physical pickup is simulated. Every observation prefix is reconstructed and evaluated. Both final viewers, temporal 3D playback and capture/occupancy/render animations are exported automatically. A common cohort of preobserved stair samples currently hidden behind the box measures geometric representation after occlusion. See [M7](m7_visual_memory.md).
+
+Saved M6 captures can be replayed without graphics initialization. Fresh capture remains available. Held-out references and analytic evaluation geometry never enter fusion. Prefix replay is a benchmark implementation, not a real-time mapping claim.
+
+The high-quality fresh EGL capture has completed on PACE: 61 actual frames per condition, 640 by 480 input and verified 15-frame-per-second MP4 exports. See [the measured PACE result](m7_pace_results.md).
+
+### M8: independent head orientation — implemented and locally validated
+
+Optional per-frame head yaw/pitch changes camera orientation independently of the torso and box. Fixed-head and prescribed-scan conditions share body/payload poses, optical centers, calibration, timestamps, frame budgets and held-out references. Incremental reconstruction, camera-direction playback and an evaluation-only observed/never-observed stair sample diagnostic are implemented. The local 13-frame run measured no additional visible stair samples from this scan; rotation alone cannot unblock a physically occluded ray at the same optical center. See [M8](m8_head_scan.md). The 61-frame high-quality preset is ready for a separate PACE run.
+
+### Next: lateral observations and realistic errors
+
+1. Run the M8 high-quality preset on PACE and inspect the recorded camera poses, visibility sets and animations.
+2. Test lateral camera-center displacement or a separate lateral body path while carrying the box, preserving equal frame budgets and documenting any changed pose constraints. Assess physical feasibility separately; do not claim kinematic waypoints are executable robot motion.
+3. Introduce controlled pose error, depth noise and imperfect self/payload masking before interpreting ideal-simulator results as real-robot performance.
+4. Define a later tactile-update interface that records observation source and preserves unknown space. Tactile fusion and dynamic clearing remain separate implementations.
+
+The current project direction is a head-mounted RGB-D vision-to-voxel module with later tactile observations for missing local information. Robot control and behavior-model adaptation remain outside this infrastructure.
 
 ## Intended module boundaries
 

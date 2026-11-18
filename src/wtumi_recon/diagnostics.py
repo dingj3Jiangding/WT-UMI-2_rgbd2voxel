@@ -1,7 +1,8 @@
 """Portable image comparisons without a GPU or an OpenGL window."""
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
+from pathlib import Path
 
 
 def save_comparison(path, rgb_ref, depth_ref, rgb_pred, depth_pred, title, tolerance_m):
@@ -31,10 +32,14 @@ def save_comparison(path, rgb_ref, depth_ref, rgb_pred, depth_pred, title, toler
     cell_w, cell_h = width * scale, height * scale + 28
     canvas = Image.new("RGB", (3 * cell_w, 2 * cell_h + 80), "#151b24")
     draw = ImageDraw.Draw(canvas)
-    draw.text((12, 10), title, fill="white")
+    # Keep panel labels readable as camera resolution grows.
+    import matplotlib
+    font = ImageFont.truetype(str(Path(matplotlib.get_data_path()) / "fonts/ttf/DejaVuSans.ttf"),
+                              max(11, min(22, cell_w // 30)))
+    draw.text((12, 10), title, fill="white", font=font)
     for i, (panel, label) in enumerate(zip(panels, labels)):
         x, y = (i % 3) * cell_w, 32 + (i // 3) * cell_h
-        draw.text((x + 8, y + 3), label, fill="white")
+        draw.text((x + 8, y + 3), label, fill="white", font=font)
         canvas.paste(Image.fromarray(panel).resize((width * scale, height * scale), Image.Resampling.NEAREST), (x, y + 24))
-    draw.text((12, canvas.height - 30), f"Black: zero error/background | Magenta: missing | Cyan: extra | Full red: >= {tolerance_m*1000:g} mm depth error", fill="white")
+    draw.text((12, canvas.height - 30), f"Black: zero error/background | Magenta: missing | Cyan: extra | Full red: >= {tolerance_m*1000:g} mm depth error", fill="white", font=font)
     canvas.save(path)

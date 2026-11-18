@@ -95,6 +95,9 @@ def test_mujoco_depth_is_camera_z_and_matches_analytic_tilted_plane():
     model = mujoco.MjModel.from_xml_string('''<mujoco><visual><global offwidth="128" offheight="128"/>
       <map znear="0.005" zfar="10"/></visual><worldbody><camera name="capture" fovy="58"/>
       <geom type="box" pos="0 0 -0.05" size="5 5 0.05"/></worldbody></mujoco>''')
+    # Match capture_mujoco: metric depth is sampled at pixel centers.
+    # MSAA depth resolve can select subpixel samples differently across drivers.
+    model.vis.quality.offsamples = 0
     data = mujoco.MjData(model)
     width,height=96,64
     k=intrinsics_from_fovy(width,height,58)

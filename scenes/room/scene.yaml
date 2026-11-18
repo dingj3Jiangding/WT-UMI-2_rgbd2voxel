@@ -1,0 +1,163 @@
+# Enclosed rectangular room: 6.4 x 10.0 m inside, 2.4 m wall height; no roof.
+# World +Z is up; rig forward is +Y. size_m means full dimensions.
+# G1 uses its original scale and a fixed carry pose; no walking or grasp controller.
+# Camera mounting above the head is provisional, not factory calibration.
+# Centered longitudinal wall is 5.0 m long: half the interior room length.
+schema_version: 1
+scene_name: g1_room
+environment:
+  objects:
+  - name: floor
+    type: box
+    position_m: [0, 3.6, -0.04]
+    size_m: [6.6, 10.2, 0.08]
+    color_rgba: [0.32, 0.42, 0.36, 1]
+  - name: front_wall
+    type: box
+    position_m: [0, -1.45, 1.2]
+    size_m: [6.6, 0.1, 2.4]
+    color_rgba: [0.72, 0.75, 0.8, 1]
+  - name: back_wall
+    type: box
+    position_m: [0, 8.65, 1.2]
+    size_m: [6.6, 0.1, 2.4]
+    color_rgba: [0.72, 0.75, 0.8, 1]
+  - name: left_wall
+    type: box
+    position_m: [-3.25, 3.6, 1.2]
+    size_m: [0.1, 10, 2.4]
+    color_rgba: [0.68, 0.73, 0.8, 1]
+  - name: right_wall
+    type: box
+    position_m: [3.25, 3.6, 1.2]
+    size_m: [0.1, 10, 2.4]
+    color_rgba: [0.68, 0.73, 0.8, 1]
+  - name: center_partition
+    type: box
+    position_m: [0, 3.6, 1.2]
+    size_m: [0.12, 5, 2.4]
+    color_rgba: [0.77, 0.58, 0.36, 1]
+camera:
+  width: 320
+  height: 240
+  fovy_degrees: 65
+  depth_trunc_m: 14.0
+  position_in_rig_m: [0, 0.05, 1.36]
+  target_in_rig_m: [0, 2.0, 1.0]
+torso:
+  size_m: [0.4, 0.3, 0.75]
+  position_in_rig_m: [0.0, 0.0, 0.8]
+  enabled: false
+box:
+  size_m: [0.5, 0.4, 0.4]
+  position_in_rig_m: [0, 0.36, 0.95]
+  enabled: true
+trajectory:
+- id: view_000
+  timestamp_s: 0.0
+  position_m: [-1.6, -0.5, 0.0]
+  yaw_degrees: 0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_001
+  timestamp_s: 0.333333333
+  position_m: [-1.8, 0.6, 0.0]
+  yaw_degrees: -15
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_002
+  timestamp_s: 0.666666667
+  position_m: [-1.8, 2.4, 0.0]
+  yaw_degrees: -25
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_003
+  timestamp_s: 1.0
+  position_m: [-1.8, 4.4, 0.0]
+  yaw_degrees: 0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_004
+  timestamp_s: 1.333333333
+  position_m: [-1.7, 6.8, 0.0]
+  yaw_degrees: -55
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_005
+  timestamp_s: 1.666666667
+  position_m: [0, 7.4, 0.0]
+  yaw_degrees: -90
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_006
+  timestamp_s: 2.0
+  position_m: [1.7, 7.0, 0.0]
+  yaw_degrees: 155
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_007
+  timestamp_s: 2.333333333
+  position_m: [1.8, 5.2, 0.0]
+  yaw_degrees: 180
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_008
+  timestamp_s: 2.666666667
+  position_m: [1.8, 3.6, 0.0]
+  yaw_degrees: 155
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_009
+  timestamp_s: 3.0
+  position_m: [1.8, 1.8, 0.0]
+  yaw_degrees: 180
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_010
+  timestamp_s: 3.333333333
+  position_m: [1.8, 0, 0.0]
+  yaw_degrees: 135
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_011
+  timestamp_s: 3.666666667
+  position_m: [0, -0.5, 0.0]
+  yaw_degrees: 90
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_012
+  timestamp_s: 4.0
+  position_m: [-1.6, -0.5, 0.0]
+  yaw_degrees: 25
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+held_out:
+- id: evaluation_left_aisle
+  timestamp_s: 5.0
+  eye: [-2.3, 0.4, 1.65]
+  target: [-0.6, 4.8, 1.0]
+  up: [0, 0, 1]
+- id: evaluation_right_aisle
+  timestamp_s: 6.0
+  eye: [2.3, 7.0, 1.65]
+  target: [0.6, 2.4, 1.0]
+  up: [0, 0, 1]
+reconstruction:
+  backend: uniform
+  volume_length_m: 10.4
+  origin_m: [-5.2, -1.5, -0.15]
+  resolution: 256
+  sdf_trunc_m: 0.14
+occupancy:
+  enabled: true
+  resolution: 64
+  pixel_stride: 4
+evaluation:
+  depth_tolerance_m: 0.03
+playback:
+  fps: 3
+robot:
+  model: unitree_g1
+  pose: carry
+  base_height_m: 0.793
+  joint_positions_degrees: {}

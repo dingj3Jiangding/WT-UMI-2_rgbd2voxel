@@ -65,7 +65,7 @@ cd -- "$project_dir"
 
 # Relative arguments avoid the incompatible /./ cut-point in macOS openrsync.
 sources=(README.md pyproject.toml requirements.txt requirements-mujoco.txt .gitignore
-         src/wtumi_recon scripts tests configs assets docs)
+         src/wtumi_recon scripts tests configs assets docs scenes)
 if "$with_replay"; then
   fixture=outputs/m5_mujoco_demo
   sources+=("$fixture/reconstruction.yaml" "$fixture/experiment.yaml"

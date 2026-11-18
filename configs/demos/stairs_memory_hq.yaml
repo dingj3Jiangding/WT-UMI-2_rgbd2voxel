@@ -1,0 +1,26 @@
+# Fresh 640x480 capture and 15-fps MP4 playback; no physical pickup or walking.
+# Clear observations use t<2 s; the box phase starts at frame 31, t=2 s.
+schema_version: 1
+capture_config: ../capture/stairs_rig_hq.yaml
+preobserve_frames: 30
+reconstruction:
+  backend: uniform
+  volume_length_m: 3.5
+  origin_m:
+  - -1.75
+  - -0.5
+  - -0.15
+  resolution: 160
+  sdf_trunc_m: 0.08
+occupancy:
+  enabled: true
+  resolution: 64
+  pixel_stride: 8
+evaluation:
+  depth_tolerance_m: 0.03
+  sample_spacing_m: 0.04
+incremental_prefixes: true
+playback:
+  fps: 15
+  scale: 2
+  mp4: true

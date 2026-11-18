@@ -1,0 +1,199 @@
+# Prescribed orientation scan; no optimization using evaluation results.
+schema_version: 1
+scene_name: head_rig_staircase
+camera:
+  width: 320
+  height: 240
+  fovy_degrees: 65
+  depth_trunc_m: 6.0
+  position_in_rig_m:
+  - 0.0
+  - 0.0
+  - 1.6
+  target_in_rig_m:
+  - 0.0
+  - 2.0
+  - 0.65
+stairs:
+  origin_m:
+  - 0.0
+  - 1.2
+  - 0.0
+  width_m: 1.4
+  tread_m: 0.35
+  rise_m: 0.18
+  steps: 4
+box:
+  size_m:
+  - 0.7
+  - 0.6
+  - 0.6
+  position_in_rig_m:
+  - 0.0
+  - 0.55
+  - 0.85
+torso:
+  size_m:
+  - 0.4
+  - 0.3
+  - 0.75
+  position_in_rig_m:
+  - 0.0
+  - 0.0
+  - 0.8
+trajectory:
+- id: approach
+  timestamp_s: 0.0
+  position_m:
+  - 0.0
+  - -0.5
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_001
+  timestamp_s: 0.3333333333333333
+  position_m:
+  - 0.0
+  - -0.4
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 8.333333333333332
+  head_pitch_degrees: 3.333333333333333
+- id: view_002
+  timestamp_s: 0.6666666666666666
+  position_m:
+  - 0.0
+  - -0.30000000000000004
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 16.666666666666664
+  head_pitch_degrees: 6.666666666666666
+- id: near
+  timestamp_s: 1.0
+  position_m:
+  - 0.0
+  - -0.2
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 25.0
+  head_pitch_degrees: 10.0
+- id: view_004
+  timestamp_s: 1.3333333333333333
+  position_m:
+  - -0.15999999999999995
+  - -0.18333333333333335
+  - 0.0
+  yaw_degrees: -3.999999999999999
+  head_yaw_degrees: 16.666666666666668
+  head_pitch_degrees: 6.666666666666668
+- id: view_005
+  timestamp_s: 1.6666666666666665
+  position_m:
+  - -0.3199999999999999
+  - -0.16666666666666669
+  - 0.0
+  yaw_degrees: -7.999999999999998
+  head_yaw_degrees: 8.333333333333337
+  head_pitch_degrees: 3.333333333333335
+- id: left
+  timestamp_s: 2.0
+  position_m:
+  - -0.48
+  - -0.15
+  - 0.0
+  yaw_degrees: -12.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_007
+  timestamp_s: 2.333333333333333
+  position_m:
+  - -0.16000000000000025
+  - -0.13333333333333336
+  - 0.0
+  yaw_degrees: -4.000000000000007
+  head_yaw_degrees: -8.333333333333325
+  head_pitch_degrees: 3.3333333333333304
+- id: view_008
+  timestamp_s: 2.6666666666666665
+  position_m:
+  - 0.15999999999999984
+  - -0.11666666666666667
+  - 0.0
+  yaw_degrees: 3.9999999999999964
+  head_yaw_degrees: -16.666666666666664
+  head_pitch_degrees: 6.666666666666665
+- id: right
+  timestamp_s: 3.0
+  position_m:
+  - 0.48
+  - -0.1
+  - 0.0
+  yaw_degrees: 12.0
+  head_yaw_degrees: -25.0
+  head_pitch_degrees: 10.0
+- id: view_010
+  timestamp_s: 3.333333333333333
+  position_m:
+  - 0.3200000000000001
+  - -0.01666666666666674
+  - 0.0
+  yaw_degrees: 8.000000000000004
+  head_yaw_degrees: -16.666666666666675
+  head_pitch_degrees: 6.66666666666667
+- id: view_011
+  timestamp_s: 3.6666666666666665
+  position_m:
+  - 0.16000000000000006
+  - 0.06666666666666662
+  - 0.0
+  yaw_degrees: 4.000000000000002
+  head_yaw_degrees: -8.333333333333337
+  head_pitch_degrees: 3.333333333333335
+- id: closer
+  timestamp_s: 4.0
+  position_m:
+  - 0.0
+  - 0.15
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+held_out:
+- id: evaluation_front_left
+  timestamp_s: 5.0
+  eye:
+  - -1.1
+  - 0.05
+  - 1.65
+  target:
+  - 0.0
+  - 1.85
+  - 0.4
+  up:
+  - 0.0
+  - 0.0
+  - 1.0
+- id: evaluation_front_right
+  timestamp_s: 6.0
+  eye:
+  - 1.05
+  - 0.25
+  - 1.75
+  target:
+  - 0.0
+  - 1.9
+  - 0.45
+  up:
+  - 0.0
+  - 0.0
+  - 1.0
+roi:
+  min_m:
+  - -0.75
+  - 1.15
+  - -0.02
+  max_m:
+  - 0.75
+  - 2.65
+  - 0.8

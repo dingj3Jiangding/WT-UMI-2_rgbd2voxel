@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
-import open3d as o3d
+
+if TYPE_CHECKING:
+    import open3d as o3d
 
 
 def look_at_pose(eye, target, up=(0, -1, 0)) -> np.ndarray:
@@ -32,6 +36,9 @@ def pinhole_rays(intrinsics, t_wc, width, height) -> o3d.core.Tensor:
     Build rays explicitly because the Open3D helper uses half-pixel offsets,
     whereas back-projection and the TSDF baseline use integer pixel centers.
     """
+    # Keep camera-only MuJoCo tools free of Open3D's bundled GLFW library.
+    import open3d as o3d
+
     k, pose = np.asarray(intrinsics, dtype=float), np.asarray(t_wc, dtype=float)
     if k.shape != (3, 3) or pose.shape != (4, 4) or not np.isfinite(k).all() or not np.isfinite(pose).all():
         raise ValueError("intrinsics and t_wc must be finite 3x3 and 4x4 matrices")
@@ -53,6 +60,8 @@ class MeshRGBDRenderer:
     """Cache one mesh acceleration structure; interpolate only its vertex colors."""
 
     def __init__(self, mesh):
+        import open3d as o3d
+
         if not len(mesh.triangles):
             raise ValueError("cannot render a mesh without triangles")
         self.triangles = np.asarray(mesh.triangles).copy()

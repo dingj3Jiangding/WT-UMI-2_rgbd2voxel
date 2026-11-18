@@ -1,0 +1,23 @@
+schema_version: 1
+reconstruction:
+  backend: uniform
+  volume_length_m: 3.5
+  origin_m:
+  - -1.75
+  - -0.5
+  - -0.15
+  resolution: 160
+  sdf_trunc_m: 0.08
+occupancy:
+  enabled: true
+  resolution: 64
+  pixel_stride: 4
+evaluation:
+  depth_tolerance_m: 0.03
+  sample_spacing_m: 0.04
+fixed_capture_config: ../capture/stairs_view_fixed.yaml
+scan_capture_config: ../capture/stairs_view_scan.yaml
+playback:
+  fps: 3
+  scale: 2
+  mp4: true

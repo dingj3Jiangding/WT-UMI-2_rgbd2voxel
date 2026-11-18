@@ -1,6 +1,6 @@
 # M5: MuJoCo capture and RGB-D reconstruction results
 
-On 2026-11-11, actual MuJoCo rendering, independent sequence export, TSDF reconstruction, and held-out-view evaluation were completed locally on Mac. The full example is saved in `outputs/m5_mujoco_demo/`. PACE scripts are ready but have not run on the remote cluster.
+On 2026-11-11, actual MuJoCo rendering, independent sequence export, TSDF reconstruction, and held-out-view evaluation were completed locally on Mac. The full example is saved in `outputs/m5_mujoco_demo/`. This document records that Mac milestone. A later PACE EGL run completed separately; its downloaded measurement files are in `outputs/pace_meeting_results/`. See the current [PACE runbook](PACE_runbook.md).
 
 ## What this run validates
 

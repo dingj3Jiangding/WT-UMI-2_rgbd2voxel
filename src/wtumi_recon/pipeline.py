@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import platform
 from pathlib import Path
@@ -42,7 +43,59 @@ def make_rgbd(rgb, depth_m, depth_trunc_m):
     )
 
 
-def run_reconstruction(config_path, output_dir):
+class ReconstructionState:
+    """Process-local cumulative mapping state for immutable sequence prefixes.
+
+    Supply one fresh instance per observation history. Each successful call must
+    strictly extend the previous prefix. Source file identity and metadata are
+    checked before reuse; do not modify source assets while a run is executing.
+    If a call fails after mapping starts, discard the state and replay afresh.
+    """
+
+    def __init__(self):
+        self._settings = None
+        self._frames = []
+        self._backend = None
+        self._occupancy = None
+        self._integration_seconds = 0.0
+        self._occupancy_seconds = 0.0
+        self._occupancy_frames = []
+        self._unfinished = False
+
+
+def _prefix_identity(cfg, sequence):
+    if sequence is None:
+        raise ValueError("prefix_state requires an immutable RGB-D sequence source")
+    settings = {key: cfg[key] for key in
+                ("camera", "reconstruction", "occupancy", "sensor", "world_up")}
+    settings["scene_name"] = sequence.scene_name
+    settings["reference_kind"] = sequence.reference_kind
+    records = {row["id"]: row for row in sequence.manifest["frames"]}
+    frames = []
+    for view in cfg["views"]:
+        if view["split"] != "integration":
+            continue
+        record = records[view["id"]]
+        assets = {}
+        for key in ("rgb", "depth_m", "reference_rgb", "reference_depth_m"):
+            if key not in record:
+                continue
+            path = (sequence.root / record[key]).resolve()
+            stat = path.stat()
+            assets[key] = (str(path), stat.st_dev, stat.st_ino, stat.st_size,
+                           stat.st_mtime_ns, stat.st_ctime_ns)
+        frames.append({"view": copy.deepcopy(view), "assets": assets})
+    return copy.deepcopy(settings), frames
+
+
+def run_reconstruction(config_path, output_dir, *, prefix_state=None, compact=False, snapshot_volume=False):
+    """Reconstruct once, or extend a process-local cumulative sequence map.
+
+    Compact snapshots evaluate/export held-out views, mesh and occupancy only;
+    the final call should use compact=False to retain the complete result API.
+    Set snapshot_volume=True to retain dense uniform TSDF data during compact
+    playback export as well. This does not fuse any additional observations.
+    """
     started = perf_counter()
     cfg = load_run_config(config_path)
     sequence = None
@@ -52,6 +105,23 @@ def run_reconstruction(config_path, output_dir):
         scene = None
     else:
         scene = SyntheticScene.from_config(cfg["scene"])
+    if type(compact) is not bool:
+        raise ValueError("compact must be a boolean")
+    if type(snapshot_volume) is not bool:
+        raise ValueError("snapshot_volume must be a boolean")
+    identity, prefix_frames = None, None
+    if prefix_state is not None:
+        if not isinstance(prefix_state, ReconstructionState):
+            raise TypeError("prefix_state must be a ReconstructionState")
+        if prefix_state._unfinished:
+            raise ValueError("prefix state belongs to a failed/in-progress run; create a fresh state")
+        identity, prefix_frames = _prefix_identity(cfg, sequence)
+        if prefix_state._settings is not None:
+            previous = prefix_state._frames
+            if identity != prefix_state._settings:
+                raise ValueError("prefix mapping settings or calibration changed")
+            if len(prefix_frames) <= len(previous) or prefix_frames[:len(previous)] != previous:
+                raise ValueError("prefix must strictly extend unchanged observations, poses and source files")
     settings = TSDFConfig(**cfg["reconstruction"])
     if settings.backend == "uniform" and scene is not None:
         lo, hi = np.asarray(settings.origin_m), np.asarray(settings.origin_m) + settings.volume_length_m
@@ -69,12 +139,17 @@ def run_reconstruction(config_path, output_dir):
     k = np.asarray(cam["K"], dtype=float)
     width, height = cam["width"], cam["height"]
     intrinsic = o3d.camera.PinholeCameraIntrinsic(width, height, cam["fx"], cam["fy"], cam["cx"], cam["cy"])
-    backend = Open3DTSDFMap(settings)
     occupancy_cfg = cfg["occupancy"]
-    occupancy = EvidenceOccupancyGrid(settings.origin_m,
-        settings.volume_length_m / occupancy_cfg["resolution"], occupancy_cfg["resolution"]) if occupancy_cfg["enabled"] else None
-    occupancy_seconds, occupancy_frames = 0.0, []
-    references, observations, frame_records, integrated_ids = {}, {}, [], []
+    extending = prefix_state is not None and prefix_state._settings is not None
+    backend = prefix_state._backend if extending else Open3DTSDFMap(settings)
+    occupancy = (prefix_state._occupancy if extending else
+        EvidenceOccupancyGrid(settings.origin_m, settings.volume_length_m / occupancy_cfg["resolution"],
+                              occupancy_cfg["resolution"]) if occupancy_cfg["enabled"] else None)
+    occupancy_seconds = prefix_state._occupancy_seconds if extending else 0.0
+    occupancy_frames = copy.deepcopy(prefix_state._occupancy_frames) if extending else []
+    references, observations, frame_records = {}, {}, []
+    integrated_ids = [frame["view"]["id"] for frame in prefix_state._frames] if extending else []
+    prior_ids = set(integrated_ids)
     reference_kind = sequence.reference_kind if sequence is not None else "clean_synthetic_ground_truth"
     source_metadata = sequence.metadata if sequence is not None else {"producer": "open3d_synthetic"}
     if sequence is not None:
@@ -92,22 +167,26 @@ def run_reconstruction(config_path, output_dir):
         else:
             pair = scene.render(k, np.asarray(view["T_wc"]), width, height)
         return clipped_pair(*pair)
-    integration_seconds = 0.0
+    integration_seconds = prefix_state._integration_seconds if extending else 0.0
+    if prefix_state is not None:
+        prefix_state._unfinished = True
     # Only integration views reach the TSDF API. Held-out images are generated later.
     for view in cfg["views"]:
-        if view["split"] != "integration":
+        if view["split"] != "integration" or view["id"] in prior_ids:
             continue
         pose = np.asarray(view["T_wc"])
         rgb, depth = read_observation(view)
         if not np.any(depth > 0):
             raise ValueError(f"integration view {view['id']} observes no valid geometry")
-        references[view["id"]] = read_observation(view, reference=True) if sequence is not None else (rgb, depth)
+        if not compact:
+            references[view["id"]] = read_observation(view, reference=True) if sequence is not None else (rgb, depth)
         input_depth = corrupt_depth(depth, cfg["sensor"], view["id"], cam["depth_trunc_m"])
         input_rgb = rgb.copy()
         input_rgb[input_depth == 0] = 0
         if not np.any(input_depth > 0):
             raise ValueError(f"integration view {view['id']} has no valid observations after sensor perturbation")
-        observations[view["id"]] = (input_rgb, input_depth)
+        if not compact:
+            observations[view["id"]] = (input_rgb, input_depth)
         tick = perf_counter()
         backend.integrate(make_rgbd(input_rgb, input_depth, cam["depth_trunc_m"]), intrinsic, pose)
         integration_seconds += perf_counter() - tick
@@ -125,23 +204,25 @@ def run_reconstruction(config_path, output_dir):
     mesh.compute_vertex_normals()
     if not o3d.io.write_triangle_mesh(str(out / "mesh.ply"), mesh):
         raise IOError("failed to save reconstruction mesh")
-    o3d.io.write_point_cloud(str(out / "pointcloud.ply"), backend.extract_point_cloud())
+    if not compact:
+        o3d.io.write_point_cloud(str(out / "pointcloud.ply"), backend.extract_point_cloud())
     volume_path = None
-    if settings.backend == "uniform":
+    if settings.backend == "uniform" and (not compact or snapshot_volume):
         backend.save_volume(out / "tsdf_volume.npz")
         volume_path = "tsdf_volume.npz"
 
     occupancy_report = None
     if occupancy is not None:
         occupancy.save(out / "occupancy.npz")
-        save_occupancy_slices(out / "occupancy_slices.png", occupancy)
+        if not compact:
+            save_occupancy_slices(out / "occupancy_slices.png", occupancy)
         labels = {-1: "outside", 0: "unknown", 1: "free", 2: "occupied"}
         probes = []
         for probe in occupancy_cfg["probes"]:
             code = int(occupancy.state_at(np.asarray([probe["point_m"]]))[0])
             probes.append({**probe, "state": labels[code], "state_code": code})
         occupancy_report = {
-            **occupancy.summary(), "volume": "occupancy.npz", "slices": "occupancy_slices.png",
+            **occupancy.summary(), "volume": "occupancy.npz", "slices": None if compact else "occupancy_slices.png",
             "origin_m": list(settings.origin_m), "voxel_size_m": occupancy.voxel_size_m,
             "resolution": occupancy_cfg["resolution"], "pixel_stride": occupancy_cfg["pixel_stride"],
             "integration_seconds": occupancy_seconds, "integrated_frame_ids": integrated_ids.copy(),
@@ -153,10 +234,18 @@ def run_reconstruction(config_path, output_dir):
     rows = []
     for view in cfg["views"]:
         name, split = view["id"], view["split"]
+        if compact and split == "integration":
+            continue
         pose = np.asarray(view["T_wc"])
         if split == "held_out":
             rgb, depth = read_observation(view, reference=True)
         else:
+            if name not in references:
+                references[name] = read_observation(view, reference=True)
+                source_rgb, source_depth = read_observation(view)
+                input_depth = corrupt_depth(source_depth, cfg["sensor"], name, cam["depth_trunc_m"])
+                source_rgb[input_depth == 0] = 0
+                observations[name] = (source_rgb, input_depth)
             rgb, depth = references[name]
         if not (depth > 0).any():
             raise ValueError(f"evaluation view {name} observes no valid geometry")
@@ -200,10 +289,20 @@ def run_reconstruction(config_path, output_dir):
         "volume": volume_path, "occupancy": occupancy_report, "views": rows,
         "summary": {split: summarize_views([r for r in rows if r["split"] == split]) for split in ("integration", "held_out")},
         "metric_scope": "Depth and RGB errors use depth-overlap pixels only; coverage, missing/extra and inlier fraction report missing or incorrect geometry. RGB PSNR null with exact_match=true means infinite PSNR.",
-        "timing_scope": "total_seconds includes source loading/generation, fusion, evaluation and geometry/image/volume export; excludes final manifest/metrics writes and viewer export",
+        "export_scope": "held_out_snapshot" if compact else "complete",
+        "incremental_prefix": prefix_state is not None,
+        "newly_integrated_frame_ids": [name for name in integrated_ids if name not in prior_ids],
+        "timing_scope": "total_seconds measures this call's loading, new fusion, evaluation and exports; excludes final manifest/metrics writes and viewer export. Integration timings are cumulative across the prefix when incremental_prefix is true.",
         "integration_seconds": integration_seconds, "total_seconds": perf_counter() - started,
         "versions": {"python": platform.python_version(), "platform": platform.platform(), "numpy": np.__version__, "open3d": o3d.__version__},
     }
     write_json(out / "manifest.json", {"depth_unit": "metre", "depth_definition": "camera_z", "pixel_centers": "integer u,v", "camera_convention": "opencv x-right y-down z-forward", "K": cam["K"], "width": width, "height": height, "world_up": cfg["world_up"], "frames": frame_records})
     write_json(out / "metrics.json", report)
+    if prefix_state is not None:
+        prefix_state._settings, prefix_state._frames = identity, prefix_frames
+        prefix_state._backend, prefix_state._occupancy = backend, occupancy
+        prefix_state._integration_seconds = integration_seconds
+        prefix_state._occupancy_seconds = occupancy_seconds
+        prefix_state._occupancy_frames = copy.deepcopy(occupancy_frames)
+        prefix_state._unfinished = False
     return report

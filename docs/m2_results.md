@@ -1,5 +1,7 @@
 # M2: Multi-view static scene validation
 
+Historical record: generated M2 output directories were removed on 2026-11-17. Configurations and tests are retained; rerun the reconstruction commands before opening the outputs linked below.
+
 ## Completed work
 
 - The same pipeline switches between a color-gradient cube with a sphere and a door with a frame, handle, and floor using two YAML files.

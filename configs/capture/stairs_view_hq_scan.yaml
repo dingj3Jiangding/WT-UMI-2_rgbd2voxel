@@ -1,0 +1,631 @@
+# Prescribed orientation scan; no optimization using evaluation results.
+schema_version: 1
+scene_name: head_rig_staircase
+camera:
+  width: 640
+  height: 480
+  fovy_degrees: 65
+  depth_trunc_m: 6.0
+  position_in_rig_m:
+  - 0.0
+  - 0.0
+  - 1.6
+  target_in_rig_m:
+  - 0.0
+  - 2.0
+  - 0.65
+stairs:
+  origin_m:
+  - 0.0
+  - 1.2
+  - 0.0
+  width_m: 1.4
+  tread_m: 0.35
+  rise_m: 0.18
+  steps: 4
+box:
+  size_m:
+  - 0.7
+  - 0.6
+  - 0.6
+  position_in_rig_m:
+  - 0.0
+  - 0.55
+  - 0.85
+torso:
+  size_m:
+  - 0.4
+  - 0.3
+  - 0.75
+  position_in_rig_m:
+  - 0.0
+  - 0.0
+  - 0.8
+trajectory:
+- id: approach
+  timestamp_s: 0.0
+  position_m:
+  - 0.0
+  - -0.5
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: path_001
+  timestamp_s: 0.06666666666666667
+  position_m:
+  - 0.0
+  - -0.48
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 1.6666666666666667
+  head_pitch_degrees: 0.6666666666666666
+- id: path_002
+  timestamp_s: 0.13333333333333333
+  position_m:
+  - 0.0
+  - -0.46
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 3.3333333333333335
+  head_pitch_degrees: 1.3333333333333333
+- id: path_003
+  timestamp_s: 0.2
+  position_m:
+  - 0.0
+  - -0.44
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 5.0
+  head_pitch_degrees: 2.0
+- id: path_004
+  timestamp_s: 0.26666666666666666
+  position_m:
+  - 0.0
+  - -0.42
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 6.666666666666667
+  head_pitch_degrees: 2.6666666666666665
+- id: path_005
+  timestamp_s: 0.3333333333333333
+  position_m:
+  - 0.0
+  - -0.4
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 8.333333333333332
+  head_pitch_degrees: 3.333333333333333
+- id: path_006
+  timestamp_s: 0.4
+  position_m:
+  - 0.0
+  - -0.38
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 10.0
+  head_pitch_degrees: 4.0
+- id: path_007
+  timestamp_s: 0.4666666666666667
+  position_m:
+  - 0.0
+  - -0.36
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 11.666666666666666
+  head_pitch_degrees: 4.666666666666667
+- id: path_008
+  timestamp_s: 0.5333333333333333
+  position_m:
+  - 0.0
+  - -0.34
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 13.333333333333334
+  head_pitch_degrees: 5.333333333333333
+- id: path_009
+  timestamp_s: 0.6
+  position_m:
+  - 0.0
+  - -0.32
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 15.0
+  head_pitch_degrees: 6.0
+- id: path_010
+  timestamp_s: 0.6666666666666666
+  position_m:
+  - 0.0
+  - -0.3
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 16.666666666666664
+  head_pitch_degrees: 6.666666666666666
+- id: path_011
+  timestamp_s: 0.7333333333333333
+  position_m:
+  - 0.0
+  - -0.28
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 18.333333333333332
+  head_pitch_degrees: 7.333333333333333
+- id: path_012
+  timestamp_s: 0.8
+  position_m:
+  - 0.0
+  - -0.26
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 20.0
+  head_pitch_degrees: 8.0
+- id: path_013
+  timestamp_s: 0.8666666666666667
+  position_m:
+  - 0.0
+  - -0.24
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 21.666666666666668
+  head_pitch_degrees: 8.666666666666668
+- id: path_014
+  timestamp_s: 0.9333333333333333
+  position_m:
+  - 0.0
+  - -0.22
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 23.333333333333332
+  head_pitch_degrees: 9.333333333333334
+- id: near
+  timestamp_s: 1.0
+  position_m:
+  - 0.0
+  - -0.2
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 25.0
+  head_pitch_degrees: 10.0
+- id: path_016
+  timestamp_s: 1.0666666666666667
+  position_m:
+  - -0.032
+  - -0.196666666667
+  - 0.0
+  yaw_degrees: -0.8
+  head_yaw_degrees: 23.333333333333332
+  head_pitch_degrees: 9.333333333333334
+- id: path_017
+  timestamp_s: 1.1333333333333333
+  position_m:
+  - -0.064
+  - -0.193333333333
+  - 0.0
+  yaw_degrees: -1.6
+  head_yaw_degrees: 21.666666666666668
+  head_pitch_degrees: 8.666666666666668
+- id: path_018
+  timestamp_s: 1.2
+  position_m:
+  - -0.096
+  - -0.19
+  - 0.0
+  yaw_degrees: -2.4
+  head_yaw_degrees: 20.0
+  head_pitch_degrees: 8.0
+- id: path_019
+  timestamp_s: 1.2666666666666666
+  position_m:
+  - -0.128
+  - -0.186666666667
+  - 0.0
+  yaw_degrees: -3.2
+  head_yaw_degrees: 18.333333333333336
+  head_pitch_degrees: 7.333333333333334
+- id: path_020
+  timestamp_s: 1.3333333333333333
+  position_m:
+  - -0.16
+  - -0.183333333333
+  - 0.0
+  yaw_degrees: -4.0
+  head_yaw_degrees: 16.666666666666668
+  head_pitch_degrees: 6.666666666666668
+- id: path_021
+  timestamp_s: 1.4
+  position_m:
+  - -0.192
+  - -0.18
+  - 0.0
+  yaw_degrees: -4.8
+  head_yaw_degrees: 15.000000000000002
+  head_pitch_degrees: 6.000000000000001
+- id: path_022
+  timestamp_s: 1.4666666666666666
+  position_m:
+  - -0.224
+  - -0.176666666667
+  - 0.0
+  yaw_degrees: -5.6
+  head_yaw_degrees: 13.333333333333336
+  head_pitch_degrees: 5.333333333333334
+- id: path_023
+  timestamp_s: 1.5333333333333334
+  position_m:
+  - -0.256
+  - -0.173333333333
+  - 0.0
+  yaw_degrees: -6.4
+  head_yaw_degrees: 11.666666666666664
+  head_pitch_degrees: 4.666666666666666
+- id: path_024
+  timestamp_s: 1.6
+  position_m:
+  - -0.288
+  - -0.17
+  - 0.0
+  yaw_degrees: -7.2
+  head_yaw_degrees: 9.999999999999998
+  head_pitch_degrees: 3.999999999999999
+- id: path_025
+  timestamp_s: 1.6666666666666667
+  position_m:
+  - -0.32
+  - -0.166666666667
+  - 0.0
+  yaw_degrees: -8.0
+  head_yaw_degrees: 8.333333333333332
+  head_pitch_degrees: 3.3333333333333326
+- id: path_026
+  timestamp_s: 1.7333333333333334
+  position_m:
+  - -0.352
+  - -0.163333333333
+  - 0.0
+  yaw_degrees: -8.8
+  head_yaw_degrees: 6.666666666666665
+  head_pitch_degrees: 2.666666666666666
+- id: path_027
+  timestamp_s: 1.8
+  position_m:
+  - -0.384
+  - -0.16
+  - 0.0
+  yaw_degrees: -9.6
+  head_yaw_degrees: 4.999999999999999
+  head_pitch_degrees: 1.9999999999999996
+- id: path_028
+  timestamp_s: 1.8666666666666667
+  position_m:
+  - -0.416
+  - -0.156666666667
+  - 0.0
+  yaw_degrees: -10.4
+  head_yaw_degrees: 3.3333333333333326
+  head_pitch_degrees: 1.333333333333333
+- id: path_029
+  timestamp_s: 1.9333333333333333
+  position_m:
+  - -0.448
+  - -0.153333333333
+  - 0.0
+  yaw_degrees: -11.2
+  head_yaw_degrees: 1.6666666666666663
+  head_pitch_degrees: 0.6666666666666665
+- id: left
+  timestamp_s: 2.0
+  position_m:
+  - -0.48
+  - -0.15
+  - 0.0
+  yaw_degrees: -12.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: path_031
+  timestamp_s: 2.066666666666667
+  position_m:
+  - -0.416
+  - -0.146666666667
+  - 0.0
+  yaw_degrees: -10.4
+  head_yaw_degrees: -1.6666666666666718
+  head_pitch_degrees: 0.6666666666666687
+- id: path_032
+  timestamp_s: 2.1333333333333333
+  position_m:
+  - -0.352
+  - -0.143333333333
+  - 0.0
+  yaw_degrees: -8.8
+  head_yaw_degrees: -3.3333333333333326
+  head_pitch_degrees: 1.333333333333333
+- id: path_033
+  timestamp_s: 2.2
+  position_m:
+  - -0.288
+  - -0.14
+  - 0.0
+  yaw_degrees: -7.2
+  head_yaw_degrees: -5.000000000000004
+  head_pitch_degrees: 2.0000000000000018
+- id: path_034
+  timestamp_s: 2.2666666666666666
+  position_m:
+  - -0.224
+  - -0.136666666667
+  - 0.0
+  yaw_degrees: -5.6
+  head_yaw_degrees: -6.666666666666665
+  head_pitch_degrees: 2.666666666666666
+- id: path_035
+  timestamp_s: 2.3333333333333335
+  position_m:
+  - -0.16
+  - -0.133333333333
+  - 0.0
+  yaw_degrees: -4.0
+  head_yaw_degrees: -8.333333333333337
+  head_pitch_degrees: 3.333333333333335
+- id: path_036
+  timestamp_s: 2.4
+  position_m:
+  - -0.096
+  - -0.13
+  - 0.0
+  yaw_degrees: -2.4
+  head_yaw_degrees: -9.999999999999998
+  head_pitch_degrees: 3.999999999999999
+- id: path_037
+  timestamp_s: 2.466666666666667
+  position_m:
+  - -0.032
+  - -0.126666666667
+  - 0.0
+  yaw_degrees: -0.8
+  head_yaw_degrees: -11.66666666666667
+  head_pitch_degrees: 4.666666666666668
+- id: path_038
+  timestamp_s: 2.533333333333333
+  position_m:
+  - 0.032
+  - -0.123333333333
+  - 0.0
+  yaw_degrees: 0.8
+  head_yaw_degrees: -13.33333333333333
+  head_pitch_degrees: 5.333333333333332
+- id: path_039
+  timestamp_s: 2.6
+  position_m:
+  - 0.096
+  - -0.12
+  - 0.0
+  yaw_degrees: 2.4
+  head_yaw_degrees: -15.000000000000002
+  head_pitch_degrees: 6.000000000000001
+- id: path_040
+  timestamp_s: 2.6666666666666665
+  position_m:
+  - 0.16
+  - -0.116666666667
+  - 0.0
+  yaw_degrees: 4.0
+  head_yaw_degrees: -16.666666666666664
+  head_pitch_degrees: 6.666666666666665
+- id: path_041
+  timestamp_s: 2.7333333333333334
+  position_m:
+  - 0.224
+  - -0.113333333333
+  - 0.0
+  yaw_degrees: 5.6
+  head_yaw_degrees: -18.333333333333336
+  head_pitch_degrees: 7.333333333333334
+- id: path_042
+  timestamp_s: 2.8
+  position_m:
+  - 0.288
+  - -0.11
+  - 0.0
+  yaw_degrees: 7.2
+  head_yaw_degrees: -19.999999999999996
+  head_pitch_degrees: 7.999999999999998
+- id: path_043
+  timestamp_s: 2.8666666666666667
+  position_m:
+  - 0.352
+  - -0.106666666667
+  - 0.0
+  yaw_degrees: 8.8
+  head_yaw_degrees: -21.666666666666668
+  head_pitch_degrees: 8.666666666666668
+- id: path_044
+  timestamp_s: 2.933333333333333
+  position_m:
+  - 0.416
+  - -0.103333333333
+  - 0.0
+  yaw_degrees: 10.4
+  head_yaw_degrees: -23.33333333333333
+  head_pitch_degrees: 9.333333333333332
+- id: right
+  timestamp_s: 3.0
+  position_m:
+  - 0.48
+  - -0.1
+  - 0.0
+  yaw_degrees: 12.0
+  head_yaw_degrees: -25.0
+  head_pitch_degrees: 10.0
+- id: path_046
+  timestamp_s: 3.066666666666667
+  position_m:
+  - 0.448
+  - -0.083333333333
+  - 0.0
+  yaw_degrees: 11.2
+  head_yaw_degrees: -23.33333333333333
+  head_pitch_degrees: 9.333333333333332
+- id: path_047
+  timestamp_s: 3.1333333333333333
+  position_m:
+  - 0.416
+  - -0.066666666667
+  - 0.0
+  yaw_degrees: 10.4
+  head_yaw_degrees: -21.666666666666668
+  head_pitch_degrees: 8.666666666666668
+- id: path_048
+  timestamp_s: 3.2
+  position_m:
+  - 0.384
+  - -0.05
+  - 0.0
+  yaw_degrees: 9.6
+  head_yaw_degrees: -19.999999999999996
+  head_pitch_degrees: 7.999999999999998
+- id: path_049
+  timestamp_s: 3.2666666666666666
+  position_m:
+  - 0.352
+  - -0.033333333333
+  - 0.0
+  yaw_degrees: 8.8
+  head_yaw_degrees: -18.333333333333336
+  head_pitch_degrees: 7.333333333333334
+- id: path_050
+  timestamp_s: 3.3333333333333335
+  position_m:
+  - 0.32
+  - -0.016666666667
+  - 0.0
+  yaw_degrees: 8.0
+  head_yaw_degrees: -16.666666666666664
+  head_pitch_degrees: 6.666666666666665
+- id: path_051
+  timestamp_s: 3.4
+  position_m:
+  - 0.288
+  - 0.0
+  - 0.0
+  yaw_degrees: 7.2
+  head_yaw_degrees: -15.000000000000002
+  head_pitch_degrees: 6.000000000000001
+- id: path_052
+  timestamp_s: 3.466666666666667
+  position_m:
+  - 0.256
+  - 0.016666666667
+  - 0.0
+  yaw_degrees: 6.4
+  head_yaw_degrees: -13.33333333333333
+  head_pitch_degrees: 5.333333333333332
+- id: path_053
+  timestamp_s: 3.533333333333333
+  position_m:
+  - 0.224
+  - 0.033333333333
+  - 0.0
+  yaw_degrees: 5.6
+  head_yaw_degrees: -11.66666666666667
+  head_pitch_degrees: 4.666666666666668
+- id: path_054
+  timestamp_s: 3.6
+  position_m:
+  - 0.192
+  - 0.05
+  - 0.0
+  yaw_degrees: 4.8
+  head_yaw_degrees: -9.999999999999998
+  head_pitch_degrees: 3.999999999999999
+- id: path_055
+  timestamp_s: 3.6666666666666665
+  position_m:
+  - 0.16
+  - 0.066666666667
+  - 0.0
+  yaw_degrees: 4.0
+  head_yaw_degrees: -8.333333333333337
+  head_pitch_degrees: 3.333333333333335
+- id: path_056
+  timestamp_s: 3.7333333333333334
+  position_m:
+  - 0.128
+  - 0.083333333333
+  - 0.0
+  yaw_degrees: 3.2
+  head_yaw_degrees: -6.666666666666665
+  head_pitch_degrees: 2.666666666666666
+- id: path_057
+  timestamp_s: 3.8
+  position_m:
+  - 0.096
+  - 0.1
+  - 0.0
+  yaw_degrees: 2.4
+  head_yaw_degrees: -5.000000000000004
+  head_pitch_degrees: 2.0000000000000018
+- id: path_058
+  timestamp_s: 3.8666666666666667
+  position_m:
+  - 0.064
+  - 0.116666666667
+  - 0.0
+  yaw_degrees: 1.6
+  head_yaw_degrees: -3.3333333333333326
+  head_pitch_degrees: 1.333333333333333
+- id: path_059
+  timestamp_s: 3.933333333333333
+  position_m:
+  - 0.032
+  - 0.133333333333
+  - 0.0
+  yaw_degrees: 0.8
+  head_yaw_degrees: -1.6666666666666718
+  head_pitch_degrees: 0.6666666666666687
+- id: closer
+  timestamp_s: 4.0
+  position_m:
+  - 0.0
+  - 0.15
+  - 0.0
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+held_out:
+- id: evaluation_front_left
+  timestamp_s: 5.0
+  eye:
+  - -1.1
+  - 0.05
+  - 1.65
+  target:
+  - 0.0
+  - 1.85
+  - 0.4
+  up:
+  - 0.0
+  - 0.0
+  - 1.0
+- id: evaluation_front_right
+  timestamp_s: 6.0
+  eye:
+  - 1.05
+  - 0.25
+  - 1.75
+  target:
+  - 0.0
+  - 1.9
+  - 0.45
+  up:
+  - 0.0
+  - 0.0
+  - 1.0
+roi:
+  min_m:
+  - -0.75
+  - 1.15
+  - -0.02
+  max_m:
+  - 0.75
+  - 2.65
+  - 0.8

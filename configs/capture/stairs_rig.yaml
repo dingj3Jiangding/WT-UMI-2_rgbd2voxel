@@ -1,0 +1,58 @@
+# Kinematic RGB-D capture: Z-up world, +Y rig forward, yaw about +Z.
+# The camera, torso and carried box share one moving mocap body.
+schema_version: 1
+scene_name: head_rig_staircase
+camera:
+  width: 160
+  height: 120
+  fovy_degrees: 65
+  depth_trunc_m: 6.0
+  position_in_rig_m: [0.0, 0.0, 1.6]
+  target_in_rig_m: [0.0, 2.0, 0.65]
+stairs:
+  origin_m: [0.0, 1.2, 0.0]
+  width_m: 1.4
+  tread_m: 0.35
+  rise_m: 0.18
+  steps: 4
+box:
+  size_m: [0.7, 0.6, 0.6]
+  position_in_rig_m: [0.0, 0.55, 0.85]
+torso:
+  size_m: [0.4, 0.3, 0.75]
+  position_in_rig_m: [0.0, 0.0, 0.8]
+trajectory:
+  - id: approach
+    timestamp_s: 0.0
+    position_m: [0.0, -0.5, 0.0]
+    yaw_degrees: 0.0
+  - id: near
+    timestamp_s: 1.0
+    position_m: [0.0, -0.2, 0.0]
+    yaw_degrees: 0.0
+  - id: left
+    timestamp_s: 2.0
+    position_m: [-0.48, -0.15, 0.0]
+    yaw_degrees: -12.0
+  - id: right
+    timestamp_s: 3.0
+    position_m: [0.48, -0.1, 0.0]
+    yaw_degrees: 12.0
+  - id: closer
+    timestamp_s: 4.0
+    position_m: [0.0, 0.15, 0.0]
+    yaw_degrees: 0.0
+held_out:
+  - id: evaluation_front_left
+    timestamp_s: 5.0
+    eye: [-1.1, 0.05, 1.65]
+    target: [0.0, 1.85, 0.4]
+    up: [0.0, 0.0, 1.0]
+  - id: evaluation_front_right
+    timestamp_s: 6.0
+    eye: [1.05, 0.25, 1.75]
+    target: [0.0, 1.9, 0.45]
+    up: [0.0, 0.0, 1.0]
+roi:
+  min_m: [-0.75, 1.15, -0.02]
+  max_m: [0.75, 2.65, 0.8]

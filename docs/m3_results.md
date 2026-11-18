@@ -1,5 +1,7 @@
 # M3: Voxel resolution and depth perturbation comparison
 
+Historical record: generated M3 output directories were removed on 2026-11-17. Configurations and tests are retained; rerun the experiment before opening the outputs linked below.
+
 Nine static door experiments were completed: grid resolutions of 80, 160, and 240, each with clean depth, Gaussian depth noise with a 5 mm standard deviation, or the same noise plus 10% random dropout. The volume edge length was fixed at 2.5 m, TSDF truncation distance at 0.06 m, with three fusion frames and one novel evaluation view.
 
 ## Results

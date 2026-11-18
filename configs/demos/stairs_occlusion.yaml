@@ -1,0 +1,16 @@
+# A paired kinematic capture, three mapping conditions, and staircase metrics.
+schema_version: 1
+capture_config: ../capture/stairs_rig.yaml
+reconstruction:
+  backend: uniform
+  volume_length_m: 3.5
+  origin_m: [-1.75, -0.5, -0.15]
+  resolution: 160
+  sdf_trunc_m: 0.08
+occupancy:
+  enabled: true
+  resolution: 64
+  pixel_stride: 2
+evaluation:
+  depth_tolerance_m: 0.03
+  sample_spacing_m: 0.04

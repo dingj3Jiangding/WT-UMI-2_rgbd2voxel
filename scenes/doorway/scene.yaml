@@ -1,0 +1,189 @@
+# Enclosed rectangular room: 6.4 x 10.0 m inside, 2.4 m wall height; no roof.
+# World +Z is up; rig forward is +Y. size_m means full dimensions.
+# G1 uses its original scale and a fixed carry pose; no walking or grasp controller.
+# Camera mounting above the head is provisional, not factory calibration.
+# Central transverse wall retains a 1.0 x 2.05 m opening and hinged door.
+# angle_degrees stays fixed during capture; O/L preview opening and closing.
+schema_version: 1
+scene_name: g1_doorway
+environment:
+  objects:
+  - name: floor
+    type: box
+    position_m: [0, 3.6, -0.04]
+    size_m: [6.6, 10.2, 0.08]
+    color_rgba: [0.32, 0.42, 0.36, 1]
+  - name: front_wall
+    type: box
+    position_m: [0, -1.45, 1.2]
+    size_m: [6.6, 0.1, 2.4]
+    color_rgba: [0.72, 0.75, 0.8, 1]
+  - name: back_wall
+    type: box
+    position_m: [0, 8.65, 1.2]
+    size_m: [6.6, 0.1, 2.4]
+    color_rgba: [0.72, 0.75, 0.8, 1]
+  - name: left_wall
+    type: box
+    position_m: [-3.25, 3.6, 1.2]
+    size_m: [0.1, 10, 2.4]
+    color_rgba: [0.68, 0.73, 0.8, 1]
+  - name: right_wall
+    type: box
+    position_m: [3.25, 3.6, 1.2]
+    size_m: [0.1, 10, 2.4]
+    color_rgba: [0.68, 0.73, 0.8, 1]
+  - name: partition_left
+    type: box
+    position_m: [-1.85, 3.6, 1.2]
+    size_m: [2.7, 0.12, 2.4]
+    color_rgba: [0.78, 0.73, 0.65, 1]
+  - name: partition_right
+    type: box
+    position_m: [1.85, 3.6, 1.2]
+    size_m: [2.7, 0.12, 2.4]
+    color_rgba: [0.78, 0.73, 0.65, 1]
+  - name: partition_header
+    type: box
+    position_m: [0, 3.6, 2.225]
+    size_m: [1, 0.12, 0.35]
+    color_rgba: [0.78, 0.73, 0.65, 1]
+  - name: beyond_door_block
+    type: box
+    position_m: [1.4, 6.6, 0.35]
+    size_m: [0.5, 0.5, 0.7]
+    color_rgba: [0.35, 0.55, 0.75, 1]
+  doors:
+  - name: passage
+    hinge_position_m: [-0.49, 3.675, 0.01]
+    width_m: 0.98
+    height_m: 2.03
+    thickness_m: 0.045
+    closed_yaw_degrees: 0.0
+    angle_degrees: 75.0
+    range_degrees: [0.0, 110.0]
+    color_rgba: [0.58, 0.33, 0.15, 1.0]
+camera:
+  width: 320
+  height: 240
+  fovy_degrees: 65
+  depth_trunc_m: 14.0
+  position_in_rig_m: [0, 0.05, 1.36]
+  target_in_rig_m: [0, 2.0, 1.0]
+torso:
+  size_m: [0.4, 0.3, 0.75]
+  position_in_rig_m: [0.0, 0.0, 0.8]
+  enabled: false
+box:
+  size_m: [0.5, 0.4, 0.4]
+  position_in_rig_m: [0, 0.36, 0.95]
+  enabled: true
+trajectory:
+- id: view_000
+  timestamp_s: 0.0
+  position_m: [-1.8, -0.5, 0.0]
+  yaw_degrees: -23.702646
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_001
+  timestamp_s: 0.333333333
+  position_m: [-1.8, 0.2, 0.0]
+  yaw_degrees: -27.897271
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_002
+  timestamp_s: 0.666666667
+  position_m: [-1.6, 1.0, 0.0]
+  yaw_degrees: -31.607502
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_003
+  timestamp_s: 1.0
+  position_m: [-1.4, 1.8, 0.0]
+  yaw_degrees: -37.874984
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_004
+  timestamp_s: 1.333333333
+  position_m: [-0.8, 2.1, 0.0]
+  yaw_degrees: -28.072487
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_005
+  timestamp_s: 1.666666667
+  position_m: [0, 2.1, 0.0]
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_006
+  timestamp_s: 2.0
+  position_m: [0.8, 2.1, 0.0]
+  yaw_degrees: 28.072487
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_007
+  timestamp_s: 2.333333333
+  position_m: [1.6, 1.8, 0.0]
+  yaw_degrees: 41.633539
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_008
+  timestamp_s: 2.666666667
+  position_m: [2, 1.0, 0.0]
+  yaw_degrees: 37.568592
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_009
+  timestamp_s: 3.0
+  position_m: [1.9, 0.1, 0.0]
+  yaw_degrees: 28.495639
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_010
+  timestamp_s: 3.333333333
+  position_m: [1.0, -0.3, 0.0]
+  yaw_degrees: 14.381395
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_011
+  timestamp_s: 3.666666667
+  position_m: [0, -0.5, 0.0]
+  yaw_degrees: 0.0
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+- id: view_012
+  timestamp_s: 4.0
+  position_m: [-1.2, -0.4, 0.0]
+  yaw_degrees: -16.699244
+  head_yaw_degrees: 0.0
+  head_pitch_degrees: 0.0
+held_out:
+- id: evaluation_front_left
+  timestamp_s: 5.0
+  eye: [-2.2, -0.6, 1.65]
+  target: [0, 3.6, 1.0]
+  up: [0, 0, 1]
+- id: evaluation_front_right
+  timestamp_s: 6.0
+  eye: [2.1, 0.4, 1.75]
+  target: [0, 3.6, 1.0]
+  up: [0, 0, 1]
+reconstruction:
+  backend: uniform
+  volume_length_m: 10.4
+  origin_m: [-5.2, -1.5, -0.15]
+  resolution: 256
+  sdf_trunc_m: 0.14
+occupancy:
+  enabled: true
+  resolution: 64
+  pixel_stride: 4
+evaluation:
+  depth_tolerance_m: 0.03
+playback:
+  fps: 3
+robot:
+  model: unitree_g1
+  pose: carry
+  base_height_m: 0.793
+  joint_positions_degrees: {}
